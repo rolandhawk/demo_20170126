@@ -1,0 +1,3 @@
+#! /bin/bash
+
+docker run --rm -it -p 9090:9090 --link server --name prometheus demo/prometheus

@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"fmt"
+	"runtime"
 	"log"
 	"time"
 	"math/rand"
@@ -37,6 +38,7 @@ func init() {
 }
 
 func main() {
+	runtime.GOMAXPROCS(4)
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/buy", buyHandler)
@@ -49,6 +51,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
 	fmt.Fprintf(w, "Login\n")
+	fmt.Printf("Login\n")
 
 	login_users.Inc()
 	elapsed := time.Since(start).Seconds()
@@ -59,6 +62,7 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
 	fmt.Fprintf(w, "Logout\n")
+	fmt.Printf("Logout\n")
 
 	login_users.Dec()
 	elapsed := time.Since(start).Seconds()
@@ -68,9 +72,10 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 func buyHandler(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
-	delay := time.Duration( rand.Int() % 60 ) * time.Second // random delay
+	delay := time.Duration( rand.Int() % 10000 ) * time.Millisecond // random delay
 	time.Sleep(delay)
-	fmt.Fprintf(w, "Buy\n")
+	fmt.Fprintf(w, "Buy with delay %fs\n", delay.Seconds())
+	fmt.Printf("Buy with delay %fs\n", delay.Seconds())
 
 	buy_count.Inc()
 	elapsed := time.Since(start).Seconds()
